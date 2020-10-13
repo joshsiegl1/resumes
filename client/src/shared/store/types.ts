@@ -1,0 +1,1 @@
+export const SET_APPLICATIONS: string = "SET_APPLICATIONS"; 
