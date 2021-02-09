@@ -24,7 +24,7 @@ const Resume = ({applications, ViewId, dispatch}: {applications: Application[], 
 
         let applicationLink = 'https://ebsjobapps.blob.core.windows.net/resumes/' + application.resume; 
 
-        return (<iframe style={{width: '500px', marginTop: '50px'}} src={`http://docs.google.com/gview?url=${applicationLink}&embedded=true`} />)
+        return (<iframe style={{width: '500px', marginTop: '50px'}} src={`https://docs.google.com/gview?url=${applicationLink}&embedded=true`} />)
     }
 
     return renderResume(); 

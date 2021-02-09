@@ -51,7 +51,7 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
             style.backgroundColor = '#bccadc'; 
         }
         return (
-        <TR onClick={() => onApplicationClick(application.id, index)} index={index} style={style}>
+        <TR key={application.id} onClick={() => onApplicationClick(application.id, index)} index={index} style={style}>
             <TD>
                 {index + 1}
             </TD>

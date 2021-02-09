@@ -94,7 +94,7 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         }
 
         return (
-        <TR onClick={() => onApplicationClick(application.id, index)} index={index} style={style}>
+        <TR key={application.id} onClick={() => onApplicationClick(application.id, index)} index={index} style={style}>
             <TD>
                 {index + 1}
             </TD>
@@ -122,7 +122,10 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
     const renderExportBar = (): JSX.Element => { 
         return (<ExportBar>
           <b style={{paddingRight: 10}}>Export </b>
-          <DatePicker selected={startDate} onChange={date => setStartDate(date)}/> 
+          <DatePicker selected={startDate} onChange={date => { 
+              setStartDate(date); 
+              setExcluded([]); 
+            }}/> 
           <button style={{marginLeft: 10}} onClick={onDownloadClicked}>Download .csv</button>
         </ExportBar>)
     }
@@ -145,19 +148,6 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
 
         return filterApplications; 
     }
-
-    // const renderApplications = (applications: Application[]): JSX.Element => { 
-
-    //     let result = filterDate(applications); 
-
-    //     if (result.length <= 0) { 
-    //         return <span>No Applications for {startDate.getDate()/startDate.getFullYear()}</span>
-    //     }
-
-    //     let render = result.map(mapApplications); 
-
-    //     return <div>{render}</div>; 
-    // }
 
     return (
         <Container>

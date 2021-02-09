@@ -1,8 +1,8 @@
 const API_DEV_HOSTNAME = "http://localhost:5000/"; 
-const API_PROD_HOSTNAME = "https://ebs-linkgen.herokuapp.com/"; 
+const API_PROD_HOSTNAME = "https://ebs-job-apps.herokuapp.com/"; 
 
 const CLIENT_DEV_HOSTNAME = "http://localhost:8080/"; 
-const CLIENT_PROD_HOSTNAME = "https://ebsstorageaccount3.z13.web.core.windows.net"; 
+const CLIENT_PROD_HOSTNAME = "https://ebsjobapps.z22.web.core.windows.net/"; 
 
 export const getApiHostname = () => { 
     if (process.env.NODE_ENV === "production") 
