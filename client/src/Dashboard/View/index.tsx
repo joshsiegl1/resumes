@@ -36,30 +36,30 @@ const View = ({applications, ViewId, dispatch}: {applications: Application[], Vi
                     <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
                                 backgroundColor: 'rgba(203,213,224,255)'}}/> 
                     <b>Applicant</b>
-                    <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
-                                backgroundColor: 'rgba(203,213,224,255)'}}/> 
-                    <p style={{margin: 5}}>{application.firstName} {application.lastName},</p>
-                    <p style={{margin: 5}}>{application.discipline}</p>
-                    <p style={{margin: 5}}><a href={applicationLink}>{application.resume}</a></p>
+                    {/* <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
+                                backgroundColor: 'rgba(203,213,224,255)'}}/>  */}
+                    <p style={{margin: 5}}><b>Name: </b>{application.firstName} {application.lastName},</p>
+                    <p style={{margin: 5}}><b>Discipline: </b>{application.discipline}</p>
+                    <p style={{margin: 5}}><b>Resume: </b><a href={applicationLink}>{application.resume}</a></p>
                     <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
                                 backgroundColor: 'rgba(203,213,224,255)'}}/> 
                     <b>Location</b>
-                    <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
-                                backgroundColor: 'rgba(203,213,224,255)'}}/> 
-                    <p style={{margin: 5}}>{application.state}, {application.zip}</p>
-                    <p style={{margin: 5}}>Preferred Region: {application.region || "None"}</p>
+                    {/* <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
+                                backgroundColor: 'rgba(203,213,224,255)'}}/>  */}
+                    <p style={{margin: 5}}><b>State/Zip: </b>{application.state}, {application.zip}</p>
+                    <p style={{margin: 5}}><b>Preferred Region: </b>{application.region || "None"}</p>
                     <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
                                 backgroundColor: 'rgba(203,213,224,255)'}}/> 
                     <b>Contact</b>
+                    {/* <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
+                                backgroundColor: 'rgba(203,213,224,255)'}}/>  */}
+                    <p style={{margin: 5}}><b>Email: </b>{application.email}</p>
+                    <p style={{margin: 5}}><b>Phone: </b>{application.phone}</p>
                     <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
                                 backgroundColor: 'rgba(203,213,224,255)'}}/> 
-                    <p style={{margin: 5}}>{application.email}</p>
-                    <p style={{margin: 5}}>{application.phone}</p>
-                    <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
-                                backgroundColor: 'rgba(203,213,224,255)'}}/> 
-                    <b>Misc.</b>
-                    <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
-                                backgroundColor: 'rgba(203,213,224,255)'}}/> 
+                    <b>Miscellaneous</b>
+                    {/* <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
+                                backgroundColor: 'rgba(203,213,224,255)'}}/>  */}
                     <p style={{margin: 5}}><b>Date and Time: </b>{moment(application.timestamp).format('M/D/YY h:mm A')}</p>
                     <p style={{margin: 5}}><b>Interested in Telepractice: </b>{application.telepractice ? 'Yes' : 'No'}</p>
                     <p style={{margin: 5}}><b>Bilingual: </b>{application.bilingual ? 'Yes' : 'No'}</p>

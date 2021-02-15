@@ -10,13 +10,13 @@ import moment from 'moment';
 
 import Nav from '../Nav';  
 
-import { Container, TableBorder, ExportBar, Input, TABLE, TH, TD, TR } from './Styles'; 
+import { Container, TableBorder, ExportBar, Button, Input, TABLE, TH, TD, TR, Loader } from './Styles'; 
 
 import View from '../View/index'; 
 import Resume from '../Resume/index'; 
 
 import * as types from 'shared/store/types'; 
-import { APPLICATION_GET, DOWNLOAD_POST } from 'shared/constants/apiconstants'; 
+import { APPLICATION_GET, DOWNLOAD_POST, DOWNLOAD_RESUME_POST } from 'shared/constants/apiconstants'; 
 import { Application } from 'shared/constants/interfaces'; 
 
 var saveAs = require('file-saver');
@@ -30,10 +30,16 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
     let [excluded, setExcluded] = useState<number[]>([]); 
 
     let [startDate, setStartDate ] = useState<any>(new Date()); 
+
+    let [downloadcsv, setDownloadcsv ] = useState<boolean>(false); 
+    let [downloadResume, setDownloadResume ] = useState<boolean>(false); 
     
     useEffect(() => { 
         async function fetchApplications(): Promise<void> { 
-            await fetch(APPLICATION_GET).then((response) => response.json()).then((json) => {
+
+            let token = localStorage.getItem("token"); 
+
+            await fetch(APPLICATION_GET, { headers: { 'authorization' : 'bearer ' + token}}).then((response) => response.json()).then((json) => {
                 console.log(json); 
                 dispatch({ 
                     type: types.SET_APPLICATIONS, 
@@ -64,13 +70,50 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         setExcluded(e);  
     }
 
-    const onDownloadClicked = async (): Promise<void> => { 
+    const onResumeDownloadClicked = async (): Promise<void> => { 
+        setDownloadResume(true); 
+        let apps = filterExcluded(filterDate(applications)); 
+        if (apps.length <= 0) { 
+            alert("No resumes were submitted for this date"); 
+            setDownloadResume(false); 
+            return; 
+        }
 
-        let apps = filterDate(applications); 
+        let token = localStorage.getItem("token"); 
+
+        await fetch(DOWNLOAD_RESUME_POST, { 
+            method: 'POST', 
+            headers: { 
+                'authorization': 'bearer ' + token, 
+                'Content-Type': 'application/json'
+            }, 
+            body: JSON.stringify({
+                applications: apps
+            })
+        })
+        .then((response) => response.blob())
+        .then((blob) => { 
+            let date = (startDate.getMonth() + 1).toString() + "-" + startDate.getDate().toString() + "-" + startDate.getFullYear().toString(); 
+            saveAs(blob, 'resumes_' + date + '.zip'); 
+            setDownloadResume(false); 
+        })
+    }
+
+    const onDownloadClicked = async (): Promise<void> => { 
+        setDownloadcsv(true); 
+        let apps = filterExcluded(filterDate(applications)); 
+        if (apps.length <= 0) { 
+            alert("No resumes were submitted for this date"); 
+            setDownloadcsv(false); 
+            return; 
+        }
+
+        let token = localStorage.getItem("token"); 
 
         await fetch(DOWNLOAD_POST, { 
             method: 'POST', 
             headers: { 
+                'authorization': 'bearer ' + token, 
                 'Content-Type': 'application/json'
             },  
             body: JSON.stringify({
@@ -79,7 +122,9 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         })
         .then((response) => response.blob())
         .then((blob) => { 
-            saveAs(blob, 'test.xlsx'); 
+            let date = (startDate.getMonth() + 1).toString() + "-" + startDate.getDate().toString() + "-" + startDate.getFullYear().toString(); 
+            saveAs(blob, 'leads_' + date + '.xlsx'); 
+            setDownloadcsv(false); 
         })
 
     }
@@ -126,8 +171,29 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
               setStartDate(date); 
               setExcluded([]); 
             }}/> 
-          <button style={{marginLeft: 10}} onClick={onDownloadClicked}>Download .csv</button>
+          <Button style={{marginLeft: 10}} onClick={onDownloadClicked}>{downloadcsv && (<Loader />)}{!downloadcsv && ("Download .csv")}</Button>
+          <Button style={{marginLeft: 10}} onClick={onResumeDownloadClicked}>{downloadResume && (<Loader />)}{!downloadResume && ("Download Resumes")}</Button>
         </ExportBar>)
+    }
+
+    const filterExcluded = (applications: Application[]): Application[] => { 
+        let filteredApplications: Application[] = []; 
+
+        for (let a = 0; a < applications.length; a++) {
+            let include: boolean = true;  
+            for (let i = 0; i < excluded.length; i++) { 
+                if (applications[a].id === excluded[i]) { 
+                    include = false; 
+                }
+            }
+
+            if (include) { 
+                filteredApplications.push(applications[a]); 
+            }
+        }
+
+
+        return filteredApplications; 
     }
 
     const filterDate = (applications: Application[]): Application[] => { 

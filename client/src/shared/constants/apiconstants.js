@@ -20,3 +20,4 @@ export const APPLICATION_POST = getApiHostname() + 'application';
 export const APPLICATION_GET = getApiHostname() + 'application'; 
 export const RESUME_POST = getApiHostname() + 'resume'; 
 export const DOWNLOAD_POST = getApiHostname() + 'download'; 
+export const DOWNLOAD_RESUME_POST = getApiHostname() + 'downloadresumes'; 

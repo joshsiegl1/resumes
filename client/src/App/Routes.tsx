@@ -3,6 +3,7 @@ import { Router, Switch, Route, Redirect } from 'react-router-dom';
 
 import Form from 'Form/index'; 
 import Admin from 'Admin/index'; 
+import Login from 'Login/index'; 
 import Dashboard from 'Dashboard/index'; 
 import Export from 'Dashboard/Export/index'; 
 import View from 'Dashboard/View/index'; 
@@ -39,6 +40,7 @@ const Routes = (): JSX.Element => {
             <Switch>
                 <Route exact path='/' component={Form} /> 
                 <Route exact path='/admin' component={Admin} /> 
+                <Route exact path='/login' component={Login} /> 
                 <PrivateRoute path='/dashboard' component={Dashboard} exact/>
                 <PrivateRoute path='/dashboard/export' component={Export} exact/> 
                 <PrivateRoute path='/dashboard/view' component={View} exact /> 

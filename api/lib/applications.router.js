@@ -6,6 +6,8 @@ const multer = require('multer');
 const getStream = require('into-stream'); 
 const azureStorage = require('azure-storage'); 
 const blobService = azureStorage.createBlobService(); 
+const jwt = require('jsonwebtoken'); 
+const archiver = require('archiver');
 
 var excel = require('excel4node'); 
 
@@ -14,6 +16,17 @@ const uploadStrategy = multer({storage: inMemoryStorage }).single('resume');
 
 const containerName = 'resumes'; 
 
+function authenticateToken(req, res, next) { 
+    const authHeader = req.headers['authorization']; 
+    const token = authHeader && authHeader.split(' ')[1]
+    if (token == null) return res.status(401).send(); 
+
+    jwt.verify(token, 'mysupersecretkey', (err, user) => { 
+        if (err) return res.status(403).send(); 
+
+        next(); 
+    })
+}
 
 router.post('/application', async (req, res) => { 
     let firstName = req.body.firstName; 
@@ -62,7 +75,57 @@ router.post('/resume', uploadStrategy, async (req, res) => {
     })
 })
 
-router.post('/download', async (req, res) => { 
+let continuationToken = null; 
+let blobResults = []; 
+const listBlobSegments = () => { 
+    return new Promise((resolve, reject) => { 
+        blobService.listBlobsSegmentedWithPrefix(containerName, "", continuationToken, (err, results) => { 
+            if (err) { 
+                reject(err); 
+            } else { 
+                continuationToken = results.continuationToken; 
+                blobResults = results.entries; 
+                resolve("done"); 
+            }
+        })
+    })
+}
+
+
+const zipOneBlob = (blobName, zip) => { 
+    return new Promise((resolve, reject) => { 
+        blobService.createReadStream(containerName, blobName, err => { 
+            if (err) { 
+                reject(err); 
+            }
+        }).on('data', data => { 
+            zip.append(data, { name: blobName }); 
+            resolve("done"); 
+        }).on('error', err => { 
+            reject(err); 
+        })
+    })
+}
+
+router.post('/downloadresumes', authenticateToken, async (req, res) => {
+    let zip = archiver('zip').on('error', error => { 
+        console.log(error); 
+    }) 
+    let applications = req.body.applications;  
+
+    for (let i = 0; i < applications.length; i++) { 
+        let blobName = applications[i].resume; 
+        await zipOneBlob(blobName, zip).then(() => { 
+            console.log(blobName + " zipped"); 
+        }); 
+    }
+
+    res.attachment('resumes.zip'); 
+    zip.pipe(res); 
+    zip.finalize(); 
+})
+
+router.post('/download', authenticateToken, async (req, res) => { 
     let applications = req.body.applications; 
 
     console.log(applications); 
@@ -126,7 +189,7 @@ router.post('/download', async (req, res) => {
     workbook.write('test.xlsx', res); 
 })
 
-router.get('/application', async (req, res) => { 
+router.get('/application', authenticateToken, async (req, res) => { 
 
     const connection = await mysql.createConnection({
         host: process.env.MYSQLSERVERNAME, 

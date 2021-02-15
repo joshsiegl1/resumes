@@ -25,8 +25,11 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
     let [activeIndex, setActiveIndex] = useState<number>(0); 
     
     useEffect(() => { 
-        async function fetchApplications(): Promise<void> { 
-            await fetch(APPLICATION_GET).then((response) => response.json()).then((json) => {
+        async function fetchApplications(): Promise<void> {
+            
+            let token = localStorage.getItem("token"); 
+            
+            await fetch(APPLICATION_GET, { headers: { 'authorization': 'bearer ' + token}}).then((response) => response.json()).then((json) => {
                 console.log(json); 
                 dispatch({ 
                     type: types.SET_APPLICATIONS, 
