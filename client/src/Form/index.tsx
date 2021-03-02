@@ -11,6 +11,9 @@ const Form = (): JSX.Element => {
     let [zip, setZip] = useState<number>(); 
     let [phone, setPhone] = useState<string>(); 
     let [state, setState] = useState<string>("Alabama"); 
+    let [address1, setAddress1] = useState<string>(); 
+    let [address2, setAddress2] = useState<string>(); 
+    let [city, setCity ] = useState<string>(); 
     let [firstName, setFirstName] = useState<string>(); 
     let [lastName, setLastName] = useState<string>(); 
     let [discipline, setDiscipline] = useState<string>("Audiologist");
@@ -33,6 +36,8 @@ const Form = (): JSX.Element => {
     let [f_telepractice, f_setTelepractice] = useState<boolean>(false); 
     let [f_emails, f_setEmails] = useState<boolean>(false); 
     let [f_resume, f_setResume] = useState<boolean>(false); 
+    let [f_address1, f_setAddress1] = useState<boolean>(false); 
+    let [f_city, f_setCity ] = useState<boolean>(false); 
 
 
 
@@ -153,10 +158,15 @@ const Form = (): JSX.Element => {
 
         setSubmitting(true); 
 
-        await fileUpload(); 
+        let renamed = new File([resume], firstName + "_" + lastName + ".pdf", {type: resume.type}); 
+
+        await fileUpload(renamed); 
 
         let body: Application = { 
             email, 
+            address1, 
+            address2, 
+            city, 
             zip, 
             phone, 
             state, 
@@ -169,7 +179,7 @@ const Form = (): JSX.Element => {
             telepractice, 
             bilingual, 
             emails, 
-            resume: resume.name
+            resume: renamed.name
         } 
 
         await fetch(APPLICATION_POST, { 
@@ -184,12 +194,12 @@ const Form = (): JSX.Element => {
         })
     }
 
-    const fileUpload = async(): Promise<void> => { 
+    const fileUpload = async(renamed: File): Promise<void> => { 
         const data = new FormData(); 
-        data.append('resume', resume); 
+        data.append('resume', renamed); 
         await fetch(RESUME_POST, { 
             method: 'POST', 
-            body: data
+            body: data 
         })
     }
 
@@ -231,6 +241,14 @@ const Form = (): JSX.Element => {
             f_setTelepractice(true); 
             valid = false; 
         }
+        if (address1 === null || address1 === undefined) { 
+            f_setAddress1(true); 
+            valid = false; 
+        }
+        if (city === null || city === undefined) { 
+            f_setCity(true); 
+            valid = false; 
+        }
 
 
         return valid; 
@@ -246,6 +264,8 @@ const Form = (): JSX.Element => {
         f_setBilingual(false); 
         f_setEmails(false); 
         f_setTelepractice(false); 
+        f_setAddress1(false); 
+        f_setCity(false);
     }
 
     return (
@@ -268,6 +288,15 @@ const Form = (): JSX.Element => {
                 <div style={{width: '100%'}}>
                 <FormDetails>
                 <FormEntry>
+                    <Label>Discipline</Label>
+                    <Select 
+                        value={discipline}
+                        onChange={(e: any) => setDiscipline(e.target.value)}>
+                        {getDisciplines()}
+                    </Select>
+                </FormEntry>
+                <h2 style={{fontSize: '20px', width: '100%', color: 'rgb(74, 85, 104)'}}>Contact Information</h2>
+                <FormEntry>
                     <Label>First Name</Label>
                     {f_firstName && (<span style={{color: 'red'}}> * First Name is required</span>)}
                     <Input onChange={(e: any) => setFirstName(e.target.value)}/>
@@ -288,6 +317,20 @@ const Form = (): JSX.Element => {
                     <Input type='number' onChange={(e: any)  => setPhone(e.target.value)}/> 
                 </FormEntry>
                 <FormEntry>
+                    <Label>Address 1</Label>
+                    {f_address1 && (<span style={{color: 'red'}}> * Address is required</span>)}
+                    <Input onChange={(e: any) => setAddress1(e.target.value)} /> 
+                </FormEntry>
+                <FormEntry>
+                    <Label>Address 2</Label>
+                    <Input onChange={(e: any) => setAddress2(e.target.value)} /> 
+                </FormEntry>
+                <FormEntry>
+                    <Label>City</Label>
+                    {f_city && (<span style={{color: 'red'}}> * City is required</span>)}
+                    <Input onChange={(e: any) => setCity(e.target.value)} /> 
+                </FormEntry>
+                <FormEntry>
                     <Label>State</Label>
                     <Select 
                         value={state}
@@ -299,14 +342,6 @@ const Form = (): JSX.Element => {
                     <Label>Zip Code</Label>
                     {f_zip && (<span style={{color: 'red'}}> * Zip is required</span>)}
                     <Input type='number' onChange={(e: any)  => setZip(e.target.value)}/> 
-                </FormEntry>
-                <FormEntry>
-                    <Label>Discipline</Label>
-                    <Select 
-                        value={discipline}
-                        onChange={(e: any) => setDiscipline(e.target.value)}>
-                        {getDisciplines()}
-                    </Select>
                 </FormEntry>
                 <h2 style={{fontSize: '20px', width: '100%', color: 'rgb(74, 85, 104)'}}>Where would you like to work?</h2>
                 <FormEntry>

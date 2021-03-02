@@ -78,7 +78,7 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
 
     const renderSearchBar = (): JSX.Element => { 
         return (<SearchBar>
-          <b style={{paddingRight: 10}}>Search </b>
+          <b style={{paddingRight: 10}}>Search Anything</b>
           <Input 
             type="text" 
             onChange={(e: any) => { 
@@ -113,7 +113,7 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
 
             if (applications[i].email.toLowerCase().includes(searchText.toLowerCase())) { 
                 filteredApplications.push(applications[i]); 
-                continue; 
+                continue;  
             }
 
             if (applications[i].state.toLowerCase().includes(searchText.toLowerCase())) { 

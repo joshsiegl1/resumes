@@ -65,9 +65,8 @@ export const SearchBar = styled.div`
 export const Input = styled.input`
     outline: none; 
     box-sizing: border-box; 
-    width: 100%; 
     border: none; 
-
+    width: 80%; 
     color: #4a5568; 
 
     font-family: arial;

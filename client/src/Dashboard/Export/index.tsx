@@ -33,6 +33,7 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
 
     let [downloadcsv, setDownloadcsv ] = useState<boolean>(false); 
     let [downloadResume, setDownloadResume ] = useState<boolean>(false); 
+    let [download, setDownload ] = useState<boolean>(false); 
     
     useEffect(() => { 
         async function fetchApplications(): Promise<void> { 
@@ -70,15 +71,7 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         setExcluded(e);  
     }
 
-    const onResumeDownloadClicked = async (): Promise<void> => { 
-        setDownloadResume(true); 
-        let apps = filterExcluded(filterDate(applications)); 
-        if (apps.length <= 0) { 
-            alert("No resumes were submitted for this date"); 
-            setDownloadResume(false); 
-            return; 
-        }
-
+    const downloadResumes = async (apps: Application[]): Promise<void> => {  
         let token = localStorage.getItem("token"); 
 
         await fetch(DOWNLOAD_RESUME_POST, { 
@@ -95,19 +88,10 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         .then((blob) => { 
             let date = (startDate.getMonth() + 1).toString() + "-" + startDate.getDate().toString() + "-" + startDate.getFullYear().toString(); 
             saveAs(blob, 'resumes_' + date + '.zip'); 
-            setDownloadResume(false); 
         })
     }
 
-    const onDownloadClicked = async (): Promise<void> => { 
-        setDownloadcsv(true); 
-        let apps = filterExcluded(filterDate(applications)); 
-        if (apps.length <= 0) { 
-            alert("No resumes were submitted for this date"); 
-            setDownloadcsv(false); 
-            return; 
-        }
-
+    const downloadCsv = async (apps: Application[]): Promise<void> => { 
         let token = localStorage.getItem("token"); 
 
         await fetch(DOWNLOAD_POST, { 
@@ -124,9 +108,21 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         .then((blob) => { 
             let date = (startDate.getMonth() + 1).toString() + "-" + startDate.getDate().toString() + "-" + startDate.getFullYear().toString(); 
             saveAs(blob, 'leads_' + date + '.xlsx'); 
-            setDownloadcsv(false); 
         })
 
+    }
+
+    const onDownloadClicked = async (): Promise<void> => { 
+        setDownload(true); 
+        let apps = filterExcluded(filterDate(applications)); 
+        if (apps.length <= 0) { 
+            alert("No applications were submitted for this date"); 
+            setDownload(false); 
+            return; 
+        }
+        Promise.all([downloadCsv(apps), downloadResumes(apps)]).then(() => { 
+            setDownload(false); 
+        }); 
     }
 
     const mapApplications = (application: Application, index: number): JSX.Element => { 
@@ -171,8 +167,7 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
               setStartDate(date); 
               setExcluded([]); 
             }}/> 
-          <Button style={{marginLeft: 10}} onClick={onDownloadClicked}>{downloadcsv && (<Loader />)}{!downloadcsv && ("Download .csv")}</Button>
-          <Button style={{marginLeft: 10}} onClick={onResumeDownloadClicked}>{downloadResume && (<Loader />)}{!downloadResume && ("Download Resumes")}</Button>
+          <Button style={{marginLeft: 10}} onClick={onDownloadClicked}>{download && (<Loader />)}{!download && ("Download Files")}</Button>
         </ExportBar>)
     }
 

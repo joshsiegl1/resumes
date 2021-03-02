@@ -34,6 +34,7 @@ router.post('/application', async (req, res) => {
     let email = req.body.email; 
     let phone = req.body.phone; 
     let state = req.body.state; 
+    let city = req.body.city; 
     let zip = req.body.zip; 
     let discipline = req.body.discipline; 
     let telepractice = req.body.telepractice; 
@@ -43,6 +44,11 @@ router.post('/application', async (req, res) => {
     let reference = req.body.reference; 
     let region = req.body.region; 
     let resume = req.body.resume; 
+    let address1 = req.body.address1; 
+    let address2 = req.body.address2; 
+    if (!address2) { 
+        address2 = ""; 
+    }
 
     let timestamp = moment(Date.now()).format('YYYY-MM-DD HH:mm:ss'); 
 
@@ -54,9 +60,9 @@ router.post('/application', async (req, res) => {
     }); 
 
     const [ rows, fields ] = await connection.execute(`
-    INSERT INTO application (firstName, lastName, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-    [firstName, lastName, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume]); 
+    INSERT INTO application (firstName, lastName, address1, address2, city, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+    [firstName, lastName, address1, address2, city, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume]); 
 
     res.status(200).send(); 
 }); 
@@ -75,22 +81,69 @@ router.post('/resume', uploadStrategy, async (req, res) => {
     })
 })
 
-let continuationToken = null; 
-let blobResults = []; 
-const listBlobSegments = () => { 
-    return new Promise((resolve, reject) => { 
-        blobService.listBlobsSegmentedWithPrefix(containerName, "", continuationToken, (err, results) => { 
-            if (err) { 
-                reject(err); 
-            } else { 
-                continuationToken = results.continuationToken; 
-                blobResults = results.entries; 
-                resolve("done"); 
-            }
-        })
-    })
-}
+const generatecsv = () => { 
+    var workbook = new excel.Workbook(); 
 
+    var worksheet = workbook.addWorksheet('Sheet 1'); 
+
+    var style = workbook.createStyle({
+        font: { 
+            color: 'black', 
+            size: 12
+        }
+    })
+
+    worksheet.cell(1, 1).string('Lead Updated').style(style); 
+    worksheet.cell(1, 2).string('Candidate Source').style(style); 
+    worksheet.cell(1, 3).string('First Name').style(style); 
+    worksheet.cell(1, 4).string('Middle Name').style(style); 
+    worksheet.cell(1, 5).string('Last Name').style(style); 
+    worksheet.cell(1, 6).string('Mobile Phone').style(style); 
+    worksheet.cell(1, 7).string('Address 1: Street 1').style(style); 
+    worksheet.cell(1, 8).string('Address 1: Street 2').style(style); 
+    worksheet.cell(1, 9).string('Address 1: City').style(style); 
+    worksheet.cell(1, 10).string('ZIP/Postal Code').style(style); 
+    worksheet.cell(1, 11).string('Main Phone').style(style); 
+    worksheet.cell(1, 12).string('Primary E-mail').style(style); 
+    worksheet.cell(1, 13).string('Address 1: Country/Region').style(style); 
+    worksheet.cell(1, 14).string('Department').style(style); 
+    worksheet.cell(1, 15).string('Contact Type').style(style); 
+    worksheet.cell(1, 16).string('Candidate Status').style(style); 
+    worksheet.cell(1, 17).string('University Name').style(style); 
+    worksheet.cell(1, 18).string('Univ Outreach completed by').style(style); 
+    worksheet.cell(1, 19).string('Grad Mth').style(style); 
+    worksheet.cell(1, 20).string('Grad Yr').style(style); 
+    worksheet.cell(1, 21).string('Willing to Travel').style(style); 
+    worksheet.cell(1, 22).string('Willing to Relocate').style(style); 
+    worksheet.cell(1, 23).string('Discipline/Position').style(style); 
+    worksheet.cell(1, 24).string('Diagnosis/Population Preference').style(style); 
+    worksheet.cell(1, 25).string('Position Priority 1').style(style); 
+    worksheet.cell(1, 26).string('Position Priority 2').style(style); 
+    worksheet.cell(1, 27).string('Position Priority 3').style(style); 
+    worksheet.cell(1, 28).string('Rating Notes').style(style); 
+    worksheet.cell(1, 29).string('Pref City 1').style(style); 
+    worksheet.cell(1, 30).string('Pref State 2').style(style); 
+    worksheet.cell(1, 31).string('Pref State 3').style(style); 
+
+    for (let i = 0; i < applications.length; i++) { 
+        let row = 2 + i; 
+        worksheet.cell(row, 3).string(applications[i].firstName); 
+        worksheet.cell(row, 5).string(applications[i].lastName); 
+        worksheet.cell(row, 7).string(applications[i].address1); 
+        if (applications[i].address2)
+            worksheet.cell(row, 8).string(applications[i].address2); 
+        worksheet.cell(row, 9).string(applications[i].city); 
+        worksheet.cell(row, 10).string(applications[i].zip); 
+        worksheet.cell(row, 11).string(applications[i].phone); 
+        worksheet.cell(row, 12).string(applications[i].email); 
+        worksheet.cell(row, 13).string('United States'); 
+        worksheet.cell(row, 14).string('01'); 
+        worksheet.cell(row, 15).string('Recruiting Contact'); 
+        worksheet.cell(row, 23).string(applications[i].discipline); 
+    }
+
+    workbook.write('test.xlsx', res); 
+}
 
 const zipOneBlob = (blobName, zip) => { 
     return new Promise((resolve, reject) => { 
@@ -177,6 +230,10 @@ router.post('/download', authenticateToken, async (req, res) => {
         let row = 2 + i; 
         worksheet.cell(row, 3).string(applications[i].firstName); 
         worksheet.cell(row, 5).string(applications[i].lastName); 
+        worksheet.cell(row, 7).string(applications[i].address1); 
+        if (applications[i].address2)
+            worksheet.cell(row, 8).string(applications[i].address2); 
+        worksheet.cell(row, 9).string(applications[i].city); 
         worksheet.cell(row, 10).string(applications[i].zip); 
         worksheet.cell(row, 11).string(applications[i].phone); 
         worksheet.cell(row, 12).string(applications[i].email); 

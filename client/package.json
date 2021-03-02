@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "scripts": {
         "start": "webpack-dev-server",
-        "build": "rm -rf build && set NODE_ENV=production && webpack --config webpack.config.production.js --progress"
+        "build": "rm -rf build && set NODE_ENV=production && webpack --config webpack.config.production.js --progress",
+        "build-win": "del build && set NODE_ENV=production && webpack --config webpack.config.production.js --progress"
     },
     "dependencies": {
         "core-js": "^3.6.5",

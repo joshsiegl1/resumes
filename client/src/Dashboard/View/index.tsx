@@ -46,7 +46,8 @@ const View = ({applications, ViewId, dispatch}: {applications: Application[], Vi
                     <b>Location</b>
                     {/* <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
                                 backgroundColor: 'rgba(203,213,224,255)'}}/>  */}
-                    <p style={{margin: 5}}><b>State/Zip: </b>{application.state}, {application.zip}</p>
+                    <p style={{margin: 5}}><b>Address: </b>{application.address1}, {application.address2}</p>
+                    <p style={{margin: 5}}><b>City/State/Zip: </b>{application.city}, {application.state}, {application.zip}</p>
                     <p style={{margin: 5}}><b>Preferred Region: </b>{application.region || "None"}</p>
                     <hr style={{width: '100%', border: 'none', height: '1px', color: 'rgba(203,213,224,255)', 
                                 backgroundColor: 'rgba(203,213,224,255)'}}/> 
