@@ -191,6 +191,7 @@ const Form = (): JSX.Element => {
         })
         .then((response) => { 
             setSubmitting(false); 
+            window.location.replace("https://ebshealthcare.com/apply/appythankyou/"); 
         })
     }
 
