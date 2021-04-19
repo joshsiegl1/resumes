@@ -96,7 +96,7 @@ export const Input = styled.input`
 export const TableBorder = styled.div`
     margin-top: 50px; 
     overflow-y: auto; 
-    height: 500px;
+    height: 600px;
     padding-left: 1em!important; 
     padding-right: 1em!important; 
     padding-bottom: 1em!important; 

@@ -8,6 +8,7 @@ import Dashboard from 'Dashboard/index';
 import Export from 'Dashboard/Export/index'; 
 import View from 'Dashboard/View/index'; 
 import Links from 'Dashboard/Links/index';
+import JobPosting from 'Dashboard/JobPosting/index'; 
 
 import history from 'browserHistory'; 
 
@@ -45,6 +46,7 @@ const Routes = (): JSX.Element => {
                 <PrivateRoute path='/dashboard/export' component={Export} exact/> 
                 <PrivateRoute path='/dashboard/view' component={View} exact /> 
                 <PrivateRoute path='/dashboard/links' component={Links} exact /> 
+                <PrivateRoute path='/dashboard/job-posting' component={JobPosting} exact /> 
             </Switch>
         </Router>
     )

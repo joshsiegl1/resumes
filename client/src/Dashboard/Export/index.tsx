@@ -125,6 +125,10 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         }); 
     }
 
+    const onDownloadInstructions = async (): Promise<void> => { 
+        alert("Instructions Unavailable at this time"); 
+    }
+
     const mapApplications = (application: Application, index: number): JSX.Element => { 
         let style:any = {}; 
         if (excluded.indexOf(application.id) > -1) { 
@@ -168,6 +172,7 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
               setExcluded([]); 
             }}/> 
           <Button style={{marginLeft: 10}} onClick={onDownloadClicked}>{download && (<Loader />)}{!download && ("Download Files")}</Button>
+          <Button style={{marginLeft: 10}} onClick={onDownloadInstructions}>View Instructions</Button>
         </ExportBar>)
     }
 
@@ -195,13 +200,15 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
         let filterApplications: Application[] = []; 
 
         let selectedDay = startDate.getDate(); 
+        let selectedMonth = startDate.getMonth(); 
         let selectedYear = startDate.getFullYear(); 
 
         for (let i = 0; i < applications.length; i++) {
             let appDay = new Date(applications[i].timestamp).getDate(); 
+            let appMonth = new Date(applications[i].timestamp).getMonth(); 
             let appYear = new Date(applications[i].timestamp).getFullYear(); 
 
-            if (selectedDay === appDay && selectedYear === appYear) { 
+            if (selectedMonth === appMonth && selectedDay === appDay && selectedYear === appYear) { 
                 filterApplications.push(applications[i]); 
             }
             

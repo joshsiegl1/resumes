@@ -10,6 +10,7 @@ const socketio = require('socket.io');
 const passportInit = require('./lib/passport.init')
 const authRouter = require('./lib/auth.router')
 const applicationRouter = require('./lib/applications.router'); 
+const careerlinksRouter = require('./lib/careerlinks.router'); 
 const loginRouter = require('./lib/app.login'); 
 
 const app = express(); 
@@ -39,6 +40,7 @@ app.set('io', io);
 app.use('/', authRouter); 
 app.use('/', applicationRouter); 
 app.use('/', loginRouter); 
+app.use('/', careerlinksRouter); 
 
 let fallback = (process.env.NODE_ENV === "production") ? 80 : 5000; 
 

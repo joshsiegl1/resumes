@@ -46,6 +46,7 @@ router.post('/application', async (req, res) => {
     let resume = req.body.resume; 
     let address1 = req.body.address1; 
     let address2 = req.body.address2; 
+    let src = req.body.src; 
     if (!address2) { 
         address2 = ""; 
     }
@@ -60,9 +61,9 @@ router.post('/application', async (req, res) => {
     }); 
 
     const [ rows, fields ] = await connection.execute(`
-    INSERT INTO application (firstName, lastName, address1, address2, city, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume) 
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
-    [firstName, lastName, address1, address2, city, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume]); 
+    INSERT INTO application (firstName, lastName, address1, address2, city, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume, src) 
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, 
+    [firstName, lastName, address1, address2, city, email, phone, state, zip, discipline, telepractice, bilingual, emails, comments, reference, region, timestamp, resume, src]); 
 
     res.status(200).send(); 
 }); 
@@ -255,7 +256,7 @@ router.get('/application', authenticateToken, async (req, res) => {
         password: process.env.MYSQLPASSWORD
     }); 
 
-    let [ rows, fields ] = await connection.execute(`SELECT * FROM application`); 
+    let [ rows, fields ] = await connection.execute(`SELECT * FROM application a LEFT JOIN links l on l.sid=a.src order by a.timestamp desc`); 
 
     res.status(200).send(JSON.stringify(rows)); 
 

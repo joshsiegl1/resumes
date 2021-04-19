@@ -39,11 +39,11 @@ const Login = (): JSX.Element => {
          })
     }
 
-    const _handleKeyDown = async (event: React.KeyboardEvent, fn: () => Promise<void>) => { 
-        if (event.key === 'Enter') { 
-            await fn(); 
+    const keyPress = (e: any) => {
+        if(e.keyCode == 13){
+           onLogin(); 
         }
-    }
+     }
 
     return (<Container>
         <div style={{
@@ -71,7 +71,9 @@ const Login = (): JSX.Element => {
                         textAlign: 'center'}}>
                         <h1 style={{color: 'white', fontSize: '16px'}}>Login</h1>
                     </div>
-                    <div style={{
+                    <div
+                        onKeyDown={keyPress} 
+                        style={{
                         display: 'flex', 
                         justifyContent: 'center', 
                         alignItems: 'center', 

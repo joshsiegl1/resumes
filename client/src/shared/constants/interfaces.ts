@@ -17,7 +17,17 @@ export interface Application {
     emails?: boolean, 
     reference?: string, 
     comments?: string,
-    resume?: string
+    resume?: string, 
+    src: number, 
+    site?: string  
+}
+
+export interface Job { 
+    id?: number, 
+    location: string, 
+    discipline: string, 
+    title: string, 
+    description: string
 }
 
 export interface ViewParams { 

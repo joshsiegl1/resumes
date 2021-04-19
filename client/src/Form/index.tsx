@@ -151,6 +151,15 @@ const Form = (): JSX.Element => {
 
     const onSubmit = async (): Promise<void> => { 
 
+        let src = 0; 
+        try { 
+            const urlParams = new URLSearchParams(window.location.search); 
+            src = parseInt(urlParams.get('sid')); 
+        }
+        catch (e: any) { 
+            console.log("unknown source"); 
+        }
+
         clearFlags(); 
         if (!ValidateForm()) { 
             return; 
@@ -179,6 +188,7 @@ const Form = (): JSX.Element => {
             telepractice, 
             bilingual, 
             emails, 
+            src, 
             resume: renamed.name
         } 
 

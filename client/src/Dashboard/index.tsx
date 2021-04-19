@@ -62,16 +62,20 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
                 {moment(application.timestamp).format('M/D/YY h:mm A')}
             </TD>
             <TD>
-                {application.firstName}
+                {getHighlightedText(application.firstName, searchText)}
             </TD>
             <TD>
-                {application.lastName}
+                {getHighlightedText(application.lastName, searchText)}
             </TD>
             <TD>
-                {application.state}
+                {getHighlightedText(application.state, searchText)}
             </TD>
             <TD>
-                {application.discipline}
+                {getHighlightedText(application.discipline, searchText)}
+            </TD>
+            <TD style={{alignItems: 'center', lineHeight: '25px', display: 'flex', justifyContent: 'center'}}>
+            <img style={{marginRight: '5px'}} src='https://thumbs.dreamstime.com/b/linkedin-logo-icon-popular-social-media-element-vector-illustrations-web-internet-white-166811981.jpg' width='25' height='25'></img>
+                {getHighlightedText(application.site, searchText)}
             </TD>
         </TR>)
     }
@@ -85,6 +89,19 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
                 setSearchText(e.target.value)} 
             } /> 
         </SearchBar>)
+    }
+
+    const getHighlightedText = (text: string, highlight: string) => 
+    {
+        if (text === null || text === undefined) return <span></span>
+
+        let parts = text.split(new RegExp(`(${highlight})`, 'gi')); 
+        return <span>
+            { parts.map((part, i) => 
+            <span key={i} style={part.toLowerCase() === highlight.toLowerCase() ? { fontWeight: 'bold', color: 'dodgerblue' }: { }}>
+                { part } 
+            </span>)}
+        </span>
     }
 
     const filterApplications = (applications: Application[]): Application[] => { 
@@ -125,6 +142,11 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
                 filteredApplications.push(applications[i]); 
                 continue; 
             }
+
+            if (applications[i].site.toLowerCase().includes(searchText.toLowerCase())) { 
+                filteredApplications.push(applications[i]); 
+                continue; 
+            }
         }
 
         return filteredApplications; 
@@ -134,8 +156,8 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
     return (
         <Container>
             <Nav /> 
-            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
-                <div style={{display: 'flex', flexDirection: 'column'}}>
+            <div style={{display: 'flex', justifyContent: 'space-evenly', margin: '10px'}}>
+                <div style={{display: 'flex', flexDirection: 'column', width: '60%', minWidth: '60%'}}>
                 {renderSearchBar()}
                 <TableBorder loading={(loading ? 1 : 0)}>
                     {loading && (<div><i className="fa fa-refresh fa-spin"></i>   Loading Application Data...</div>)}
@@ -161,6 +183,9 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
                                     </TH>
                                     <TH>
                                         Discipline
+                                    </TH>
+                                    <TH>
+                                        Source
                                     </TH>
                                 </tr>
                             </thead>
