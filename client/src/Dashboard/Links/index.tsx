@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { CAREERLINKS, getClientHostname } from 'shared/constants/apiconstants'; 
 import { Button } from '../../Login/Styles';
 
-import Nav from '../Nav';  
+import Nav from '../Nav/index';  
 
 import { Container } from './Styles'; 
 

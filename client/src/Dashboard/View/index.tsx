@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'; 
 import { connect } from 'react-redux'; 
 
-import Nav from '../Nav';  
-
 import moment from 'moment'; 
 
 import { Container, ApplicantContainer, ApplicantView } from './Styles'; 

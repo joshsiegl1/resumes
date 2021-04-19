@@ -8,7 +8,7 @@ import { useHistory, withRouter } from "react-router-dom";
 
 import moment from 'moment'; 
 
-import Nav from '../Nav';  
+import Nav from '../Nav/index';  
 
 import { Container, TableBorder, ExportBar, Button, Input, TABLE, TH, TD, TR, Loader } from './Styles'; 
 
