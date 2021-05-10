@@ -1,5 +1,7 @@
 import React, { useState } from 'react'; 
 
+import parsePhoneNumberFromString from 'libphonenumber-js'; 
+
 import { Container, BoxContainer, Label, Input, Select, FormDetails, FormEntry, TextArea } from './Styles'; 
 
 import { APPLICATION_POST, RESUME_POST } from 'shared/constants/apiconstants'; 
@@ -78,7 +80,6 @@ const Form = (): JSX.Element => {
         states.push(<option value="New York">New York</option>)
         states.push(<option value="North Carolina">North Carolina</option>)
         states.push(<option value="North Dakota">North Dakota</option>)
-        states.push(<option value="Montana">Montana</option>)
         states.push(<option value="Ohio">Ohio</option>)
         states.push(<option value="Oklahoma">Oklahoma</option>)
         states.push(<option value="Oregon">Oregon</option>)
@@ -106,6 +107,8 @@ const Form = (): JSX.Element => {
         discipline.push(<option value="Board Certified Behavior Analyst">Board Certified Behavior Analyst</option>)
         discipline.push(<option value="Certified Occupational Therapy Assistant">Certified Occupational Therapy Assistant</option>)
         discipline.push(<option value="Developmental Therapist">Developmental Therapist</option>)
+        discipline.push(<option value="Human Resources">Human Resources Support</option>)
+        discipline.push(<option value="Human Resources Support">Human Resources Support</option>)
         discipline.push(<option value="Early Childhood Educator - ECSE">Early Childhood Educator - ECSE</option>)
         discipline.push(<option value="Nurse - RN">Nurse - RN</option>)
         discipline.push(<option value="Nurse - LPN">Nurse - LPN</option>)
@@ -149,6 +152,10 @@ const Form = (): JSX.Element => {
         setResume(event.target.files[0]); 
     }
 
+    const capitalizeFirstLetter = (s: string): string => { 
+        return s.charAt(0).toUpperCase() + s.slice(1); 
+    }
+
     const onSubmit = async (): Promise<void> => { 
 
         let src = 0; 
@@ -179,8 +186,8 @@ const Form = (): JSX.Element => {
             zip, 
             phone, 
             state, 
-            firstName, 
-            lastName, 
+            firstName: capitalizeFirstLetter(firstName), 
+            lastName: capitalizeFirstLetter(lastName), 
             discipline, 
             region, 
             comments, 
@@ -279,6 +286,16 @@ const Form = (): JSX.Element => {
         f_setCity(false);
     }
 
+    const formatPhoneNumber = (number: string): string => { 
+        var cleaned = ('' + number).replace(/\D/g, '');
+        var match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/);
+        if (match) {
+            var intlCode = (match[1] ? '+1 ' : '');
+            return [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+        }
+        return number;
+    }
+
     return (
         <Container>
             <BoxContainer>
@@ -325,7 +342,11 @@ const Form = (): JSX.Element => {
                 <FormEntry>
                     <Label>Phone</Label>
                     {f_phone && (<span style={{color: 'red'}}> * Phone is required</span>)}
-                    <Input type='number' onChange={(e: any)  => setPhone(e.target.value)}/> 
+                    <Input value={phone} onChange={(e: any) => {
+                        let phone = formatPhoneNumber(e.target.value); 
+
+                        setPhone(phone); 
+                    }}/>  
                 </FormEntry>
                 <FormEntry>
                     <Label>Address 1</Label>
@@ -445,7 +466,7 @@ const Form = (): JSX.Element => {
                     border: 'none', 
                     borderRadius: '5px', 
                     cursor: 'pointer', 
-                    width: '100px'
+                    width: '100px', 
                 }}>
                     {submitting && (<i className="fa fa-refresh fa-spin"></i>)}
                     {!submitting && (<b>Submit</b>)}

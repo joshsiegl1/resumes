@@ -220,7 +220,7 @@ const Export = ({applications, dispatch} : {applications: Application[], dispatc
     return (
         <Container>
             <Nav /> 
-            <div style={{display: 'flex', justifyContent: 'space-evenly'}}>
+            <div style={{display: 'flex', justifyContent: 'space-evenly', marginRight: '100px'}}>
                 <div style={{display: 'flex', flexDirection: 'column'}}>
                 {renderExportBar()}
                 <TableBorder loading={(loading ? 1 : 0)}>

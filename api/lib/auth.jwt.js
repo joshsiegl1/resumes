@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken");
 const privateKey = fs.readFileSync('./keys/private.key', 'utf8'); 
 const publicKey = fs.readFileSync('./keys/public.key', 'utf8'); 
 
+//sendgrid key: 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
+
 const issuer = 'EBS Healthcare'; 
 const subject = 'support@ebsunited.com'; 
 const audience = 'http://localhost'; 

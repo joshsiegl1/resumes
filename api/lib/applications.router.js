@@ -75,9 +75,11 @@ router.post('/resume', uploadStrategy, async (req, res) => {
 
     blobService.createBlockBlobFromStream(containerName, blobName, stream, streamLength, err => { 
         if (err) {
+            console.log("FAILURE: " + blobName); 
+            console.log(err); 
             res.status(500).send(err);  
         }
-
+        console.log("Success: " + blobName); 
         res.status(200).send(); 
     })
 })

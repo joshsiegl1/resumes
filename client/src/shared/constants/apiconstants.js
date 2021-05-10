@@ -22,5 +22,7 @@ export const RESUME_POST = getApiHostname() + 'resume';
 export const DOWNLOAD_POST = getApiHostname() + 'download'; 
 export const DOWNLOAD_RESUME_POST = getApiHostname() + 'downloadresumes'; 
 export const CAREERLINKS = getApiHostname() + 'careerlinks';
+export const DISCIPLINES = getApiHostname() + 'disciplines'; 
+export const LOGINS = getApiHostname() + 'logins'; 
 export const JOB_POST = getApiHostname() + 'job';  
 export const JOB_GET = getApiHostname() + 'job'; 

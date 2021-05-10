@@ -31,5 +31,6 @@ export const ApplicantView = styled.div`
     align-items: baseline; 
     color: #4a5568;
     flex-direction: column; 
-    width: 300px; 
+    width: 200px; 
+    font-size: 13px; 
 `; 

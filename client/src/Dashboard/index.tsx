@@ -73,11 +73,23 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
             <TD>
                 {getHighlightedText(application.discipline, searchText)}
             </TD>
-            <TD style={{alignItems: 'center', lineHeight: '25px', display: 'flex', justifyContent: 'center'}}>
-            <img style={{marginRight: '5px'}} src='https://thumbs.dreamstime.com/b/linkedin-logo-icon-popular-social-media-element-vector-illustrations-web-internet-white-166811981.jpg' width='25' height='25'></img>
+            <TD style={{alignItems: 'center', lineHeight: '25px', display: 'flex', justifyContent: 'start'}}>
+            {/* <img style={{marginRight: '5px'}} src='https://thumbs.dreamstime.com/b/linkedin-logo-icon-popular-social-media-element-vector-illustrations-web-internet-white-166811981.jpg' width='25' height='25'></img> */}
+            {getLogo(application)}
                 {getHighlightedText(application.site, searchText)}
             </TD>
         </TR>)
+    }
+
+    const getLogo = (application: Application): JSX.Element => { 
+        switch (application.site)
+        { 
+            case 'CareerBuilder': return (<img style={{marginRight: '5px'}} src='https://doqqkdlppl6bl.cloudfront.net/assets/logos/us_mobile_logo-8ad95cdb7bf0fb83f41753c6fccf1b10616b87a34cc091560922c42725f30bfc.png' width='25' height='25'></img>)
+            case 'SpeechPathology.com': return (<img style={{marginRight: '5px'}} src='https://colourlex.com/wp-content/uploads/2021/02/cadmium-red-painted-swatch-1080x675.jpg' width='25' height='25'></img>)
+            case 'ASHA.com': return (<img style={{marginRight: '5px'}} src="https://i0.wp.com/speechisbeautiful.com/wp-content/uploads/2015/04/ASHA-logo.jpg" width='25' height='25'></img>)
+        }
+
+        return (<img style={{marginRight: '5px'}} src='https://thumbs.dreamstime.com/b/linkedin-logo-icon-popular-social-media-element-vector-illustrations-web-internet-white-166811981.jpg' width='25' height='25'></img>)
     }
 
     const renderSearchBar = (): JSX.Element => { 
@@ -156,8 +168,8 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
     return (
         <Container>
             <Nav /> 
-            <div style={{display: 'flex', justifyContent: 'space-evenly', margin: '10px'}}>
-                <div style={{display: 'flex', flexDirection: 'column', width: '60%', minWidth: '60%'}}>
+            <div style={{display: 'flex', justifyContent: 'space-evenly', marginRight: '100px'}}>
+                <div style={{display: 'flex', flexDirection: 'column'}}>
                 {renderSearchBar()}
                 <TableBorder loading={(loading ? 1 : 0)}>
                     {loading && (<div><i className="fa fa-refresh fa-spin"></i>   Loading Application Data...</div>)}
@@ -189,7 +201,7 @@ const Dashboard = ({applications, dispatch} : {applications: Application[], disp
                                     </TH>
                                 </tr>
                             </thead>
-                            <tbody style={{paddingTop: '100px'}}>
+                            <tbody style={{paddingTop: '100px', fontSize: '13px'}}>
                                 {filterApplications(applications).map(mapApplications)}
                             </tbody>
                         </TABLE>

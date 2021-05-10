@@ -17,6 +17,36 @@ router.get('/careerlinks', async (req, res) => {
     res.status(200).send(JSON.stringify(rows)); 
 })
 
+router.get('/disciplines', async (req, res) => { 
+    const connection = await mysql.createConnection({
+        host: process.env.MYSQLSERVERNAME,
+        user: process.env.MYSQLUSER,
+        database: process.env.MYSQLDATABASE, 
+        password: process.env.MYSQLPASSWORD
+    })
+
+    const [ rows, fields ] = await connection.execute(`
+        SELECT * FROM disciplines ORDER BY name ASC
+    `)
+
+    res.status(200).send(JSON.stringify(rows)); 
+})
+
+router.get('/logins', async (req, res) => { 
+    const connection = await mysql.createConnection({
+        host: process.env.MYSQLSERVERNAME, 
+        user: process.env.MYSQLUSER, 
+        database: process.env.MYSQLDATABASE, 
+        password: process.env.MYSQLPASSWORD
+    })
+
+    const [ rows, fields ] = await connection.execute(`
+        SELECT username, isAdmin FROM logins ORDER BY username ASC
+    `)
+
+    res.status(200).send(JSON.stringify(rows)); 
+})
+
 router.post('/job', async (req, res) => { 
     const connection = await mysql.createConnection({
         host: process.env.MYSQLSERVERNAME, 
